@@ -1,0 +1,19 @@
+.form {
+    padding: 20px;
+    margin: 20px;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
+.form>input {
+    box-sizing: border-box;
+    width: 90%;
+    padding: 8px;
+    margin: 10px;
+}
+
+.form>button {
+    margin-left: 10px;
+    width: 90%;
+    box-sizing: border-box;
+}
