@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Home from "./components/Home";
 import SignUp from "./pages/SignUp";
+import Profile from "./components/Profile"
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,6 +27,7 @@ function App() {
           )
         }
       />
+      <Route path="/profile" element={<Profile/>} />
  
       <Route path="/auth" element={<SignUp setIsLoggedIn={setIsLoggedIn} />} />
      
