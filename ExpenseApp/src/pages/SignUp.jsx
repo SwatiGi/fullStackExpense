@@ -1,36 +1,26 @@
-import React, { useState } from 'react'
-import "./SignUp.css"
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./SignUp.css";
 
-const SignUp = () => {
-  const initialState = {
-    email: "",
-    password: "",
-    confirmPassword: ""
-  };
-
+const SignUp = ({ setIsLoggedIn }) => {
+  const initialState = { email: "", password: "", confirmPassword: "" };
   const [isLogin, setIsLogin] = useState(true);
   const [inputValue, setInputValue] = useState(initialState);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const enteredEmail = inputValue.email;
     const enteredPassword = inputValue.password;
 
-    // password confirm check only on SignUp
     if (!isLogin && inputValue.password !== inputValue.confirmPassword) {
       alert("Passwords must match");
       return;
     }
 
-    let url;
-
-    if (isLogin) {
-      localStorage.setItem("email", enteredEmail);
-      url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAldW9iw7I-eLFW7ihK1WE_JYjxfySjHAU`;
-    } else {
-      url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAldW9iw7I-eLFW7ihK1WE_JYjxfySjHAU`;
-    }
+    let url = isLogin
+      ? `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAldW9iw7I-eLFW7ihK1WE_JYjxfySjHAU`
+      : `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAldW9iw7I-eLFW7ihK1WE_JYjxfySjHAU`;
 
     fetch(url, {
       method: "POST",
@@ -39,14 +29,11 @@ const SignUp = () => {
         password: enteredPassword,
         returnSecureToken: true,
       }),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     })
       .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
+        if (res.ok) return res.json();
+        else {
           return res.json().then((data) => {
             let errorMessage = "Authentication failed!";
             if (data && data.error && data.error.message) {
@@ -57,14 +44,16 @@ const SignUp = () => {
         }
       })
       .then((data) => {
-        // authCtx.login(data.idToken, expirationTime.toISOString()); // agar context use kar rahe ho to uncomment karo
-        alert(
-          `${isLogin ? "Login Successful!" : "Account Created Successfully!"}`
-        );
+        localStorage.setItem("userEmail", data.email);
+        localStorage.setItem("userUID", data.localId);
+        localStorage.setItem("token", data.idToken);
+
+        setIsLoggedIn(true);
+        navigate("/"); 
+
+        alert(`${isLogin ? "Login Successful!" : "Account Created Successfully!"}`);
       })
-      .catch((err) => {
-        alert(err.message);
-      });
+      .catch((err) => alert(err.message));
 
     setInputValue(initialState);
   };
@@ -75,40 +64,43 @@ const SignUp = () => {
   };
 
   return (
-    <div>
+    <div style={{marginTop:"100px",margin:"auto",width:"60%"}}>
       <form onSubmit={handleSubmit} className="form">
         <h1>{isLogin ? "Login" : "SignUp"}</h1>
         <input
           type="email"
           name="email"
-          id="email"
           onChange={handleChange}
           value={inputValue.email}
           required
-          placeholder="Email"
+                  placeholder="Email"
+                  style={{background:!isLogin?"gray":"black",borderRadius:"5px",border:"none",color:isLogin?"white":"black"}}
         />
         <input
           type="password"
           name="password"
-          id="password"
           onChange={handleChange}
           value={inputValue.password}
           required
-          placeholder="Password"
+                  placeholder="Password"
+                  style={{background:!isLogin?"gray":"black",borderRadius:"5px",border:"none",color:isLogin?"white":"black"}}
         />
         {!isLogin && (
           <input
             type="password"
             name="confirmPassword"
-            id="confirmPassword"
             onChange={handleChange}
             value={inputValue.confirmPassword}
             required
-            placeholder="Confirm Password"
+                      placeholder="Confirm Password"
+                       style={{background:"gray",borderRadius:"5px",border:"none",color:"black"}}
           />
         )}
-        <button type="submit">{isLogin ? "Login" : "Sign Up"}</button>
-        <p style={{ cursor: "pointer", color: "blue" }} onClick={() => setIsLogin((prev) => !prev)}>
+        <button type="submit"className="btn">{isLogin ? "Login" : "Sign Up"}</button>
+        <p
+          style={{ cursor: "pointer", color: "blue" }}
+          onClick={() => setIsLogin((prev) => !prev)}
+        >
           {isLogin ? "Create new account" : "Already have an account? Login"}
         </p>
       </form>
@@ -117,3 +109,6 @@ const SignUp = () => {
 };
 
 export default SignUp;
+
+
+

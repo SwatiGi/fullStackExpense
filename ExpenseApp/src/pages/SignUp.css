@@ -1,4 +1,5 @@
 .form {
+
     padding: 20px;
     margin: 20px;
     border: 1px solid gray;
@@ -16,4 +17,18 @@
     margin-left: 10px;
     width: 90%;
     box-sizing: border-box;
+}
+
+.btn {
+    padding: 8px 10px;
+    border-radius: 5px;
+    background: #387deb;
+    border: none;
+}
+
+input::placeholder {
+    color: rgb(255, 255, 255);
+    /* apna color */
+    opacity: 1;
+    /* default me thoda fade hota hai */
 }
