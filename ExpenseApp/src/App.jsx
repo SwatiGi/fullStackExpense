@@ -18,7 +18,7 @@ function App() {
     <>
       {/* Navbar show only if logged in */}
       {isLoggedIn && <Navbar />}
-
+       
       <Routes>
         {/* Home page */}
         <Route
@@ -59,3 +59,15 @@ export default App;
 
 
 
+// import React from 'react'
+// import Sign from './pages/Sign'
+
+// const App = () => {
+//   return (
+//     <div>
+//     <Sign/>
+//     </div>
+//   )
+// }
+
+// export default App

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FaGithub } from "react-icons/fa6";
 import { TbWorld } from "react-icons/tb";
-
+import { ImCross } from "react-icons/im";
 const Profile = () => {
   const [fullName, setFullName] = useState("");
   const [photoURL, setPhotoURL] = useState("");
   const [userProfile, setUserProfile] = useState(null);
-
+   const [edit,setEdit]=  useState(false)
   const token = localStorage.getItem("token"); // idToken from login
 
   // Fetch user profile on component mount
@@ -86,8 +86,11 @@ const Profile = () => {
           )}
         </div>
       )}
-<hr />
-      <form onSubmit={handleUpdate}>
+      <hr />
+      {!edit&&<button onClick={()=>setEdit(!edit)} >Edit Profile</button>}
+      {edit &&
+        <>
+        <form onSubmit={handleUpdate}>
         <div style={{ marginBottom: "10px" }}>
           <FaGithub size={30} style={{ marginRight: "5px" }} />
           <label htmlFor="name">Full Name: </label>
@@ -130,7 +133,12 @@ const Profile = () => {
         >
           Update
         </button>
-      </form>
+        </form>
+        <button onClick={() => setEdit(!edit)} >
+        <ImCross size={20}/>
+        </button>
+</>
+}
     </div>
   );
 };
