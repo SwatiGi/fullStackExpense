@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ExpenseForm from "./ExpenseForm"
 const Home = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
 
@@ -61,7 +62,8 @@ const Home = ({ setIsLoggedIn }) => {
                 pauseOnHover
                 draggable
                 theme="colored"
-            />
+      />
+      <ExpenseForm/>
     </div>
   );
 };

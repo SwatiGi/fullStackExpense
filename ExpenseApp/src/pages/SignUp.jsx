@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SignUp.css";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const SignUp = ({ setIsLoggedIn }) => {
   const initialState = { email: "", password: "", confirmPassword: "" };
   const [isLogin, setIsLogin] = useState(true);      
@@ -51,8 +52,13 @@ const SignUp = ({ setIsLoggedIn }) => {
 
         setIsLoggedIn(true);
         navigate("/");
+        
+        // alert(`${isLogin ? "Login Successful!" : "Account Created Successfully!"}`);
 
-        alert(`${isLogin ? "Login Successful!" : "Account Created Successfully!"}`);
+         toast.success(
+      `${isLogin ? "Login Successful! 🎉" : "Account Created Successfully! 🎉"}`,
+      { position: "top-center" }
+    );
       })
       .catch((err) => alert(err.message));
 
@@ -183,6 +189,16 @@ const SignUp = ({ setIsLoggedIn }) => {
           </button>
         </div>
       )}
+      <ToastContainer
+                      position="top-center"
+                      autoClose={3000}
+                      hideProgressBar={false}
+                      newestOnTop={false}
+                      closeOnClick
+                      pauseOnHover
+                      draggable
+                      theme="colored"
+            />
     </div>
   );
 };
