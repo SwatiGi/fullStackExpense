@@ -4,9 +4,14 @@ import "./SignUp.css";
 
 const SignUp = ({ setIsLoggedIn }) => {
   const initialState = { email: "", password: "", confirmPassword: "" };
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(true);      
+  const [showForgot, setShowForgot] = useState(false); 
   const [inputValue, setInputValue] = useState(initialState);
+  const [forgotEmail, setForgotEmail] = useState(""); 
   const navigate = useNavigate();
+
+  const apiKey = "AIzaSyAldW9iw7I-eLFW7ihK1WE_JYjxfySjHAU";
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,9 +23,9 @@ const SignUp = ({ setIsLoggedIn }) => {
       return;
     }
 
-    let url = isLogin
-      ? `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAldW9iw7I-eLFW7ihK1WE_JYjxfySjHAU`
-      : `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAldW9iw7I-eLFW7ihK1WE_JYjxfySjHAU`;
+    const url = isLogin
+      ? `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`
+      : `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`;
 
     fetch(url, {
       method: "POST",
@@ -33,15 +38,11 @@ const SignUp = ({ setIsLoggedIn }) => {
     })
       .then((res) => {
         if (res.ok) return res.json();
-        else {
+        else
           return res.json().then((data) => {
-            let errorMessage = "Authentication failed!";
-            if (data && data.error && data.error.message) {
-              errorMessage = data.error.message;
-            }
+            let errorMessage = data?.error?.message || "Authentication failed!";
             throw new Error(errorMessage);
           });
-        }
       })
       .then((data) => {
         localStorage.setItem("userEmail", data.email);
@@ -49,7 +50,7 @@ const SignUp = ({ setIsLoggedIn }) => {
         localStorage.setItem("token", data.idToken);
 
         setIsLoggedIn(true);
-        navigate("/"); 
+        navigate("/");
 
         alert(`${isLogin ? "Login Successful!" : "Account Created Successfully!"}`);
       })
@@ -58,57 +59,136 @@ const SignUp = ({ setIsLoggedIn }) => {
     setInputValue(initialState);
   };
 
+  
+  const handleSendResetLink = () => {
+    if (!forgotEmail) {
+      alert("Please enter your email!");
+      return;
+    }
+
+    fetch(`https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${apiKey}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        requestType: "PASSWORD_RESET",
+        email: forgotEmail,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) alert(data.error.message);
+        else {
+          alert("Password reset link sent! Check your inbox.");
+          setShowForgot(false); // go back to login
+          setForgotEmail("");
+        }
+      })
+      .catch((err) => alert(err.message));
+  };
+
   const handleChange = (e) => {
-    let { name, value } = e.target;
+    const { name, value } = e.target;
     setInputValue((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
-    <div style={{marginTop:"100px",margin:"auto",width:"60%"}}>
-      <form onSubmit={handleSubmit} className="form">
-        <h1>{isLogin ? "Login" : "SignUp"}</h1>
-        <input
-          type="email"
-          name="email"
-          onChange={handleChange}
-          value={inputValue.email}
-          required
-                  placeholder="Email"
-                  style={{background:!isLogin?"gray":"black",borderRadius:"5px",border:"none",color:isLogin?"white":"black"}}
-        />
-        <input
-          type="password"
-          name="password"
-          onChange={handleChange}
-          value={inputValue.password}
-          required
-                  placeholder="Password"
-                  style={{background:!isLogin?"gray":"black",borderRadius:"5px",border:"none",color:isLogin?"white":"black"}}
-        />
-        {!isLogin && (
+    <div style={{ marginTop: "100px", margin: "auto", width: "60%" }}>
+      {!showForgot ? (
+        <form onSubmit={handleSubmit} className="form">
+          <h1>{isLogin ? "Login" : "SignUp"}</h1>
+          <input
+            type="email"
+            name="email"
+            onChange={handleChange}
+            value={inputValue.email}
+            required
+            placeholder="Email"
+            style={{
+              background: !isLogin ? "gray" : "black",
+              borderRadius: "5px",
+              border: "none",
+              color: isLogin ? "white" : "black",
+            }}
+          />
           <input
             type="password"
-            name="confirmPassword"
+            name="password"
             onChange={handleChange}
-            value={inputValue.confirmPassword}
+            value={inputValue.password}
             required
-                      placeholder="Confirm Password"
-                       style={{background:"gray",borderRadius:"5px",border:"none",color:"black"}}
+            placeholder="Password"
+            style={{
+              background: !isLogin ? "gray" : "black",
+              borderRadius: "5px",
+              border: "none",
+              color: isLogin ? "white" : "black",
+            }}
           />
-        )}
-        <button type="submit"className="btn">{isLogin ? "Login" : "Sign Up"}</button>
-        <p
-          style={{ cursor: "pointer", color: "blue" }}
-          onClick={() => setIsLogin((prev) => !prev)}
-        >
-          {isLogin ? "Create new account" : "Already have an account? Login"}
-        </p>
-      </form>
+          {!isLogin && (
+            <input
+              type="password"
+              name="confirmPassword"
+              onChange={handleChange}
+              value={inputValue.confirmPassword}
+              required
+              placeholder="Confirm Password"
+              style={{ background: "gray", borderRadius: "5px", border: "none", color: "black" }}
+            />
+          )}
+
+          <button type="submit" className="btn">
+            {isLogin ? "Login" : "Sign Up"}
+          </button>
+
+          {/* Forgot Password Link */}
+          {isLogin && (
+            <div style={{ textAlign: "center", padding: "10px" }}>
+              <button
+                style={{ background: "none", border: "none", color: "blue", cursor: "pointer" }}
+                onClick={() => setShowForgot(true)}
+              >
+                Forgot Password?
+              </button>
+            </div>
+          )}
+
+          <p
+            style={{ cursor: "pointer", color: "blue" }}
+            onClick={() => setIsLogin((prev) => !prev)}
+          >
+            {isLogin ? "Create new account" : "Already have an account? Login"}
+          </p>
+        </form>
+      ) : (
+       
+        <div style={{ textAlign: "center", padding: "20px" }}>
+          <h2>Forgot Password</h2>
+          <input
+            type="email"
+            placeholder="Enter your email"
+            value={forgotEmail}
+            onChange={(e) => setForgotEmail(e.target.value)}
+            style={{ padding: "8px", width: "250px", margin: "5px" }}
+          />
+          <br />
+          <button onClick={handleSendResetLink} style={{ marginTop: "10px", padding: "8px 15px" }}>
+            Send Reset Link
+          </button>
+          <br />
+          <button
+            onClick={() => setShowForgot(false)}
+            style={{ marginTop: "10px", background: "none", border: "none", color: "red" }}
+          >
+            Back to Login
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
 export default SignUp;
+
 
 
 
