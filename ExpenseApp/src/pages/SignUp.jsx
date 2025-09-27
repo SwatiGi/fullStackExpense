@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./SignUp.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux"
+import { authActions } from "../Store/auth";
 const SignUp = ({ setIsLoggedIn }) => {
   const initialState = { email: "", password: "", confirmPassword: "" };
   const [isLogin, setIsLogin] = useState(true);      
@@ -10,7 +12,7 @@ const SignUp = ({ setIsLoggedIn }) => {
   const [inputValue, setInputValue] = useState(initialState);
   const [forgotEmail, setForgotEmail] = useState(""); 
   const navigate = useNavigate();
-
+  let dispatch = useDispatch()
   const apiKey = "AIzaSyAldW9iw7I-eLFW7ihK1WE_JYjxfySjHAU";
 
 
@@ -54,7 +56,11 @@ const SignUp = ({ setIsLoggedIn }) => {
         navigate("/");
         
         // alert(`${isLogin ? "Login Successful!" : "Account Created Successfully!"}`);
-
+dispatch(authActions.login({
+  token: data.idToken,
+  email: data.email,
+  uid: data.localId
+}));
          toast.success(
       `${isLogin ? "Login Successful! 🎉" : "Account Created Successfully! 🎉"}`,
       { position: "top-center" }
