@@ -7,7 +7,15 @@ const ExpenseForm = () => {
     let moneyInputRef = useRef();
     let descInputRef = useRef();
     let categoryRef = useRef()
-    let [showData,setShowData] = useState([])
+    let [editId, setEditId] = useState(null);
+    let [showData, setShowData] = useState([])
+    
+    let handleEdit = (item) => {
+        moneyInputRef.current.value = item.money;
+        descInputRef.current.value = item.description;
+        categoryRef.current.value = item.category;
+        setEditId(item.id)
+    }
     let handleSubmit = async(e) => {
         e.preventDefault();
         let expenseData = {
@@ -16,11 +24,19 @@ const ExpenseForm = () => {
             category:categoryRef.current.value
         }
         try {
+            if (editId) {
+                await axios.put(`https://expenseapp-796d0-default-rtdb.firebaseio.com/expense/${editId}.json`,expenseData)
+                toast.success("Expense edit successfully")
+                setEditId(null)
+            } else {
+            
             let res = await axios.post("https://expenseapp-796d0-default-rtdb.firebaseio.com/expense.json", expenseData)
             
             let data = await res.data
            toast.success("Expense added successfully")
             console.log(data)
+            }
+            getData()
         } catch (error) {
             toast.success("Error in Posting",error)
         }
@@ -35,9 +51,7 @@ const ExpenseForm = () => {
         let data = await res.data;
         let loadedData = Object.entries(data).map(([key, item]) => ( {id: key,
             ...item}))
-        console.log(data)
         setShowData(loadedData)
-        console.log(loadedData)
         
     } catch (error) {
         console.log("Error while getting",error)
@@ -45,7 +59,18 @@ const ExpenseForm = () => {
     }
     useEffect(()=>{
 getData()
-    },[])
+    }, [])
+    let handleDelete = async (id) => {
+        try {
+            let res = await axios.delete(`https://expenseapp-796d0-default-rtdb.firebaseio.com/expense/${id}.json`)
+            let data = await res.data;
+            toast.error("iTem Deleted successful")
+            // console.log(data)
+            getData()
+        } catch (error) {
+            toast.error("Error in Deleting")
+        }
+    }
   return (
     <div className="form-container">
           <form className="expense-form" onSubmit={handleSubmit}>
@@ -58,7 +83,7 @@ getData()
           <option value="Petrol">Petrol</option>
           <option value="Salary">Salary</option>
         </select>
-        <button type="submit">Add Expense</button>
+        <button type="submit">{editId?"Update Expense":"Add Expense"}</button>
           </form>
          {showData.length > 0 && showData.map((item, i) => (
   <div key={i} className="expense-card">
@@ -66,8 +91,8 @@ getData()
     <p><b>Money:</b> {item.money}</p>
                  <p>Description: {item.description}</p>
                  <div className="btn-container">
-                 {/* <button>Delete</button>
-                 <button>Edit</button> */}
+                 <button onClick={()=>handleDelete(item.id)}>Delete</button>
+                 <button onClick={()=>handleEdit(item)}>Edit</button>
                  </div>
                  
                  
