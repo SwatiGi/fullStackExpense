@@ -3,7 +3,7 @@ import "./ExpenseForm.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-
+import {CSVLink} from "react-csv"
 const ExpenseForm = () => {
   let moneyInputRef = useRef();
   let descInputRef = useRef();
@@ -92,8 +92,33 @@ const ExpenseForm = () => {
     }
   };
 
+ const headers = [
+  { label: "Id", key: "id" },
+  { label: "Money", key: "money" },
+  { label: "Description", key: "description" },
+  { label: "Category", key: "category" },
+];
   return (
     <div className="form-container">
+       <CSVLink
+  data={showData}
+  headers={headers}
+  filename="expensedata.csv"
+  style={{
+    display: "inline-block",
+    marginTop: "15px",
+    padding: "10px 20px",
+    border: "2px solid #4CAF50",
+    borderRadius: "8px",
+    backgroundColor: "#4CAF50",
+    color: "white",
+    textDecoration: "none",
+    fontWeight: "bold",
+    cursor: "pointer",
+  }}
+>
+  Download CSV
+</CSVLink>
       <form className="expense-form" onSubmit={handleSubmit}>
         <h1>Expense form</h1>
         <input type="text" ref={moneyInputRef} placeholder="Money" required />
@@ -106,7 +131,9 @@ const ExpenseForm = () => {
         </select>
         <button type="submit">{editId ? "Update Expense" : "Add Expense"}</button>
       </form>
-       <h2 style={{ marginTop: "20px" }}>Total Expense: {total}</h2>
+      <h2 style={{ marginTop: "20px" }}>Total Expense: {total}</h2>
+ 
+
 
       {showData.length > 0 &&
         showData.map((item, i) => (
