@@ -5,7 +5,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
 
   const handleForgotPassword = () => {
-    setShowForgot(true); // Forgot password form dikhado
+    setShowForgot(true); 
   };
 
   const handleSendResetLink = () => {
@@ -15,7 +15,7 @@ const Auth = () => {
     }
 
     fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=YOUR_API_KEY`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyAldW9iw7I-eLFW7ihK1WE_JYjxfySjHAU`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

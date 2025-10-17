@@ -108,9 +108,10 @@ const ExpenseForm = () => {
     display: "inline-block",
     marginTop: "15px",
     padding: "10px 20px",
-    border: "2px solid #4CAF50",
+    border: "none",
     borderRadius: "8px",
-    backgroundColor: "#4CAF50",
+    margin:"10px",
+    background: "linear-gradient(130deg,purple,#e87df0)",
     color: "white",
     textDecoration: "none",
     fontWeight: "bold",
@@ -120,7 +121,7 @@ const ExpenseForm = () => {
   Download CSV
 </CSVLink>
       <form className="expense-form" onSubmit={handleSubmit}>
-        <h1>Expense form</h1>
+        <h1 style={{color:"white"}}>Expense form</h1>
         <input type="text" ref={moneyInputRef} placeholder="Money" required />
         <input type="text" ref={descInputRef} placeholder="Description" required />
         <select ref={categoryRef} required>
@@ -128,27 +129,32 @@ const ExpenseForm = () => {
           <option value="Food">Food</option>
           <option value="Petrol">Petrol</option>
           <option value="Salary">Salary</option>
+          <option value="MakeUp">Make Up</option>
+          <option value="stationary">Stationary</option>
+          
         </select>
         <button type="submit">{editId ? "Update Expense" : "Add Expense"}</button>
       </form>
-      <h2 style={{ marginTop: "20px" }}>Total Expense: {total}</h2>
+      <h2 style={{ marginTop: "20px",textAlign:"center",color:"purple" }}>Total Expense: {total}</h2>
  
 
 
-      {showData.length > 0 &&
-        showData.map((item, i) => (
+      {showData.length > 0 && <div className="card-container">
+      { showData.map((item, i) => (
           <div key={i} className="expense-card">
             <h1>{item.category}</h1>
             <p>
               <b>Money:</b> {item.money}
             </p>
-            <p>Description: {item.description}</p>
+            <p><b>Description:</b> {item.description}</p>
             <div className="btn-container">
-              <button onClick={() => handleDelete(item.id)}>Delete</button>
-              <button onClick={() => handleEdit(item)}>Edit</button>
+              <button style={{padding:"5px 10px",border:'none',background:"linear-gradient(130deg,red,purple)",color:"white",borderRadius:"5px",margin:"5px"}} onClick={() => handleDelete(item.id)}>Delete</button>
+              <button style={{padding:"5px 10px",border:'none',background:"linear-gradient(130deg,green,purple)",color:"white",borderRadius:"5px",margin:"5px"}} onClick={() => handleEdit(item)}>Edit</button>
             </div>
           </div>
         ))}
+      </div>
+       }
 
       <ToastContainer
         position="top-right"
@@ -165,3 +171,4 @@ const ExpenseForm = () => {
 };
 
 export default ExpenseForm;
+ 

@@ -46,13 +46,25 @@ h1 {
     text-align: center;
 }
 
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+    height: auto;
+}
+
+@media (max-width: 600px) {
+    .card-container {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
 .expense-card {
     background: #fff;
     border: 2px solid #9234eb;
     border-radius: 12px;
     padding: 15px 20px;
-    margin: 15px auto;
-    max-width: 400px;
+    margin: 5px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     font-family: Arial, sans-serif;

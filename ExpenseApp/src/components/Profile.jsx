@@ -7,9 +7,7 @@ const Profile = () => {
   const [photoURL, setPhotoURL] = useState("");
   const [userProfile, setUserProfile] = useState(null);
    const [edit,setEdit]=  useState(false)
-  const token = localStorage.getItem("token"); // idToken from login
-
-  // Fetch user profile on component mount
+  const token = localStorage.getItem("token"); 
   useEffect(() => {
     if (!token) return;
 
@@ -35,7 +33,6 @@ const Profile = () => {
       .catch((err) => alert(err.message));
   }, [token]);
 
-  // Handle Update
   const handleUpdate = (e) => {
     e.preventDefault();
 
@@ -63,20 +60,22 @@ const Profile = () => {
           alert(data.error.message);
         } else {
           alert("Profile updated successfully!");
-          setUserProfile(data); // Update state to reflect changes
+          setFullName("")
+          setPhotoURL("")
+          setUserProfile(data);
         }
       })
       .catch((err) => alert(err.message));
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "500px", margin: "20px auto", border: "1px solid #ccc" }}>
-      <h2>Profile Details</h2>
+    <div style={{ padding: "20px", maxWidth: "500px", margin: "100px auto",borderRadius:"10px",boxShadow:"0px 0px 10px purple",background:"purple",color:"white"}}>
+      <h2 >Profile Details</h2>
 
       {/* Show current profile */}
       {userProfile && (
         <div style={{ marginBottom: "20px" }}>
-          <h3>Name: {userProfile.displayName || "N/A"}</h3>
+          <h3 >Name: {userProfile.displayName || "N/A"}</h3>
           {userProfile.photoUrl && (
             <img
               src={userProfile.photoUrl}
@@ -87,11 +86,11 @@ const Profile = () => {
         </div>
       )}
       <hr />
-      {!edit&&<button onClick={()=>setEdit(!edit)} >Edit Profile</button>}
+      {!edit&&<button onClick={()=>setEdit(!edit)} style={{padding:"10px",borderRadius:"5px",border:'none',background:"linear-gradient(130deg,purple,pink)",marginLeft:"40%",boxShadow:"0px 0px 10px white"}} >Edit Profile</button>}
       {edit &&
         <>
         <form onSubmit={handleUpdate}>
-        <div style={{ marginBottom: "10px" }}>
+        <div style={{ marginBottom: "10px",display:"flex" }}>
           <FaGithub size={30} style={{ marginRight: "5px" }} />
           <label htmlFor="name">Full Name: </label>
           <input
@@ -105,7 +104,7 @@ const Profile = () => {
           />
         </div>
 
-        <div style={{ marginBottom: "10px" }}>
+        <div style={{ marginBottom: "10px" ,display:"flex"}}>
           <TbWorld size={30} style={{ marginRight: "5px" }} />
           <label htmlFor="photo">Profile Photo URL: </label>
           <input
@@ -134,7 +133,7 @@ const Profile = () => {
           Update
         </button>
         </form>
-        <button onClick={() => setEdit(!edit)} >
+        <button onClick={() => setEdit(!edit)} style={{border:"none",margin:"10px",padding:"10px",borderRadius:"50px",background:"gray",color:"white"}} >
         <ImCross size={20}/>
         </button>
 </>

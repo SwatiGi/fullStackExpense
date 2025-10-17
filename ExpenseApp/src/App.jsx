@@ -17,7 +17,7 @@ function App() {
   return (
     <>
       {/* Navbar show only if logged in */}
-      {isLoggedIn && <Navbar />}
+      {isLoggedIn && <Navbar  setIsLoggedIn={setIsLoggedIn}/>}
        
       <Routes>
         {/* Home page */}

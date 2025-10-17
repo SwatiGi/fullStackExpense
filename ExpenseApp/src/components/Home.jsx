@@ -6,11 +6,7 @@ import ExpenseForm from "./ExpenseForm"
 const Home = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.clear();
-    setIsLoggedIn(false);
-    navigate("/auth"); 
-  };
+ 
   const handleVerifyEmail = () => {
   const token = localStorage.getItem("token");
   if (!token) return toast.error("User not logged in!");
@@ -44,15 +40,15 @@ const Home = ({ setIsLoggedIn }) => {
 
   return (
     <div>
-      <div style={{ padding: "10px" }}>
-        <h1>Welcome to Expense Tracker</h1>
-      <hr />
-        <p style={{ border: "1px solid red", padding: "10px", background: "gray" }} >Your profile is not complete
+        <h1 style={{marginTop:"80px",color:"purple",borderBottom:"2px solid purple",}}>Welcome to Expense Tracker</h1>
+      <div style={{ padding: "10px",display:"flex" ,justifyContent:"space-between" }}>
+      <span style={{ border: "1px solid purple", padding: "10px", background: "none", borderRadius: "5px" }} >Your profile is not complete
         <NavLink to='/profile'>go to profile</NavLink>
-        </p>
-        <button onClick={handleLogout}>Logout</button>
+        </span>
+       
+      <button onClick={handleVerifyEmail} style={{color:"white",border:"none" , borderRadius:"5px",padding:"10px 20px",background:"linear-gradient(145deg, #b944bfff, #ecb1f0)"}} >Verify Email</button>
       </div>
-      <button onClick={handleVerifyEmail}>Verify Email</button>
+       
         <ToastContainer
                 position="top-center"
                 autoClose={3000}
